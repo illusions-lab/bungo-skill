@@ -23,4 +23,4 @@ node_modules/
 .env.local
 
 # 作品集（ユーザー持込、リポジトリに含めない）
-sources/works/
+sources/**

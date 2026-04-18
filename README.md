@@ -5,7 +5,6 @@
 > *作家を、1つのプロンプトへと蒸留します。*
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Claude Code](https://img.shields.io/badge/Claude%20Code-Skill-blueviolet)](https://claude.ai/code)
 [![Fork of](https://img.shields.io/badge/fork%20of-nuwa--skill-lightgrey)](https://github.com/alchaincyf/nuwa-skill)
 
 <br>
@@ -217,4 +216,4 @@ bungo-skill/
 
 ## ライセンス
 
-MIT（女娲と同じ）
+MIT
