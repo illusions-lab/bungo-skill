@@ -60,7 +60,8 @@ def check_l12_ethics(content: str) -> tuple[bool, str]:
 
 def check_anti_patterns(content: str) -> tuple[bool, str]:
     """L13 反パターンが 5 項目以上あるか"""
-    match = re.search(r'L13.*?(?=L14|\Z)', content, re.DOTALL)
+    # L13 見出し（h2 以上）から L14 見出しまで、または末尾まで
+    match = re.search(r'#{2,}\s*L13\b.*?(?=#{2,}\s*L14\b|\Z)', content, re.DOTALL)
     if not match:
         return False, "L13 セクションなし ❌"
 
@@ -73,7 +74,8 @@ def check_anti_patterns(content: str) -> tuple[bool, str]:
 
 def check_limits(content: str) -> tuple[bool, str]:
     """L14 限界が 3 項目以上あるか"""
-    match = re.search(r'L14.*?(?=##\s|\Z)', content, re.DOTALL)
+    # L14 見出し（h4 以上）から次の h1-h3 見出しまで、または末尾まで
+    match = re.search(r'#{2,}\s*L14\b.*?(?=\n#{1,3}\s|\Z)', content, re.DOTALL)
     if not match:
         return False, "L14 セクションなし ❌"
 
@@ -85,9 +87,9 @@ def check_limits(content: str) -> tuple[bool, str]:
 
 
 def check_research_date(content: str) -> tuple[bool, str]:
-    """調査日が記載されているか"""
-    has_date = bool(re.search(r'調査日[:：]\s*\d{4}[-/]\d{2}[-/]\d{2}', content))
-    return has_date, "調査日あり ✅" if has_date else "調査日なし ❌（YYYY-MM-DD 形式で必須）"
+    """調査日が記載されているか（マークダウン装飾を挟んでも可）"""
+    has_date = bool(re.search(r'調査日\*{0,2}[:：]\*{0,2}\s*\*{0,2}\d{4}[-/]\d{2}[-/]\d{2}', content))
+    return has_date, ("調査日あり ✅" if has_date else "調査日なし ❌（YYYY-MM-DD 形式で必須）")
 
 
 def check_identity_declaration(content: str) -> tuple[bool, str]:
