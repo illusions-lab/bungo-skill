@@ -44,7 +44,7 @@ description: |
 1. **対象作家の同一性確認**：同名異人や表記揺れを排除（例：野坂昭如／野坂明如）
 2. **ジャンル判定**：小説／詩／俳句・短歌／戯曲／随筆／個人ブログ・SNS／評論 のいずれか（ジャンル別テンプレの選択に必須）
 3. **用途の確認**：書く／添削／対話 のどれを主に使うか（全てを想定して構わない）
-4. **新規 or 更新**：既存 skill があるかを `.claude/skills/` と `examples/` で確認
+4. **新規 or 更新**：既存 skill があるかを確認。独立リポジトリ（`illusions-lab/<作家名>-skill`）とローカル（`~/.claude/skills/` や `~/Repositories/`）の両方を見る
 5. **作品集の所在**：
    > 「作品集（PDF／epub／txt／html）はお手元にありますか？ `sources/works/` に置いてもらえれば解析します。青空文庫・電子書籍からの抽出・手元の書籍スキャン、いずれでも構いません。最低 10 万字（短編 10 本程度）が目安です。」
 
@@ -99,15 +99,39 @@ description: |
 
 ---
 
-### Phase 0.5: skill ディレクトリの作成
+### Phase 0.5: skill リポジトリの作成
 
-確認が終わったら**即座に**以下を作成する（調査着手前）：
+確認が終わったら**即座に**独立リポジトリを作成する（調査着手前）。親リポ（本工房）には同居させない。
+
+**第一選択：独立 GitHub リポジトリ**
+
+[`illusions-lab/bungo-skill-template`](https://github.com/illusions-lab/bungo-skill-template) から spawn する：
+
+```bash
+# GitHub CLI を使う場合
+gh repo create illusions-lab/<作家名>-skill \
+  --template illusions-lab/bungo-skill-template --public --clone
+
+# またはローカルで初期化
+git clone https://github.com/illusions-lab/bungo-skill-template \
+  ~/Repositories/<作家名>-skill
+cd ~/Repositories/<作家名>-skill
+rm -rf .git && git init
+git add . && git commit -m "init: spawn from bungo-skill-template"
+```
+
+**代替：ローカル試用のみ**
+
+GitHub に公開しない試作の場合は `~/.claude/skills/<作家名>-skill/` に置いてもよい。ただし公開予定があるなら最初から独立リポとして作る方が後の移行コストが少ない。
+
+**作成される構造**（テンプレートで固定）：
 
 ```
-examples/[作家名]-skill/  または  .claude/skills/[作家名]-skill/
+<作家名>-skill/
 ├── SKILL.md                          # 最終生成物
 ├── README.md                         # 作家紹介 + 使い方
-├── scripts/                          # 補助スクリプト
+├── LICENSE                           # MIT
+├── .gitignore                        # sources/ を除外
 ├── references/
 │   ├── research/
 │   │   ├── 01-voice.md              # 聲（L1-L3）語彙・構文・音韻
@@ -115,20 +139,19 @@ examples/[作家名]-skill/  または  .claude/skills/[作家名]-skill/
 │   │   ├── 03-bones.md              # 骨（L7-L9）呼吸・対話・物語
 │   │   ├── 04-soul.md               # 魂（L10-L12）主題・レトリック・心理
 │   │   └── 05-boundary.md           # 界（L13-L14）反パターン・限界
-│   ├── wikipedia/                    # Wikipedia 取得結果
-│   └── sources/
-│       └── works/                    # ユーザー提供の作品集
-└── examples/                         # 3 モード各々の実働例
+│   └── wikipedia/                    # Wikipedia 取得結果
+└── sources/                          # GIT 除外、作品集（著作権配慮）
+    └── works/
 ```
 
 **自動チェック**：
-- [ ] ディレクトリ作成済み
+- [ ] 独立リポジトリまたはローカルディレクトリ作成済み
 - [ ] Wikipedia ページの存在確認（日本語・英語の両方）
 - [ ] ユーザー提供の作品集を `sources/works/` にコピー済み
 - [ ] ジャンル判定を記録（`ジャンル: 小説家（散文）` 等）
 - [ ] 更新モードの場合：既存 SKILL.md を読んで変更点を把握
 
-**鉄則**：skill は**自己完結**していなければならない。`references/research/` は必ず skill ディレクトリ内部に置く。外部参照は禁止（配布時にコピーだけで動くようにするため）。
+**鉄則**：skill は**自己完結**していなければならない。`references/research/` は必ず skill ディレクトリ内部に置く。親工房（bungo-skill）の scripts は絶対パスで呼び出し、子リポにコピーしない。
 
 ---
 
@@ -333,7 +356,7 @@ Phase 1 完了後、採集状況サマリーを表示してユーザー確認を
 
 #### Step 4: 出力
 
-`examples/[作家名]-skill/SKILL.md`（または `.claude/skills/...`）に書き出す。README.md も同時に作成する。
+子リポジトリ（`~/Repositories/<作家名>-skill/` または `~/.claude/skills/<作家名>-skill/`）の `SKILL.md` に書き出す。README.md も同時に作成する。
 
 ---
 

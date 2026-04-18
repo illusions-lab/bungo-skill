@@ -143,13 +143,26 @@ Claude Code で：
 > カフカを蒸留してほしい、作品集は sources/ に置いた
 ```
 
-できた個別 skill を呼び出す：
+できた個別 skill を呼び出す（**独立リポジトリ**として発行されます）：
+
+```bash
+npx skills add illusions-lab/dazai-skill     # 太宰治
+npx skills add illusions-lab/mishima-skill   # 三島由紀夫（予定）
+```
 
 ```
 > 太宰治.skill をロードして、このメールを書き直して
 > 三島.skill で僕の短編を添削して
 > カフカ.skill とキャリアについて対話したい
 ```
+
+### 既に蒸留された作家（独立リポジトリ）
+
+| 作家 | リポジトリ | 状態 |
+|------|--------|----|
+| 太宰治 | [illusions-lab/dazai-skill](https://github.com/illusions-lab/dazai-skill) | 🎉 パイロット蒸留完了（作品集 278 篇、約 293 万字） |
+
+> 各子 skill は独立した GitHub リポジトリとして発行され、`npx skills add` で単独インストールできます。親工房（本リポ）は蒸留の**道具と方法論**のみを保持します。
 
 ---
 
@@ -184,19 +197,29 @@ SKILL.md に「この作家はこう書く／こう書かない」を**実行可
 ## リポジトリ構造
 
 ```
-bungo-skill/
+bungo-skill/                         # 工房（蒸留装置）
 ├── SKILL.md                         # 文豪.skill 本体（作家を蒸留する工房）
 ├── docs/design/                     # 設計書
 ├── references/
-│   ├── extraction-framework.md      # 10層の抽出方法論
+│   ├── extraction-framework.md      # 14 層の抽出方法論
 │   └── skill-template.md            # 個別 skill のテンプレート
-└── examples/                        # 既に蒸留された作家
-    ├── 太宰治-skill/
-    ├── 三島由紀夫-skill/
-    └── ...
+└── scripts/                         # 作品集解析の道具
+    ├── normalize_text.py            # PDF/epub/html/青空文庫txt → UTF-8 plain
+    ├── stylometry.py                # L1-L3 統計 JSON 出力
+    ├── quality_check.py             # 生成 SKILL.md の構造検査
+    └── merge_research.py            # 14 層採集サマリー
 ```
 
-各 examples/ 配下は自己完結した skill——`npx skills add` で単独インストール可能。
+**親リポは工房として純化**されており、蒸留された個別 skill は同居しません。各子 skill は `illusions-lab/<作家名>-skill` として**独立リポジトリ**に発行され、[`illusions-lab/bungo-skill-template`](https://github.com/illusions-lab/bungo-skill-template) から spawn します：
+
+```
+dazai-skill/                         # 子リポジトリの例（独立）
+├── SKILL.md                         # 憑依本体
+├── references/
+│   ├── research/                    # 01-voice〜05-boundary + stats.json
+│   └── wikipedia/                   # ja.md / en.md
+└── sources/                         # GIT 除外（作品集は著作権配慮で共有しない）
+```
 
 ---
 
