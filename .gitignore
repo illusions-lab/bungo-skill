@@ -24,3 +24,6 @@ node_modules/
 
 # 作品集（ユーザー持込、リポジトリに含めない）
 sources/**
+
+# Github OG
+repository-open-graph.png
